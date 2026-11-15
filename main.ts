@@ -1,9 +1,9 @@
-// A working token-radar-01 entry (Node 22, standard library only).
+// A working token-radar-01 entry (Node 22, standard library only) — radar-2 build.
 //
-// The program reads the sealed snapshot from /input/snapshot.json (or --input <file|dir>), scores every
-// pre-token protocol with the radar-2 model in lib/model.ts, writes the ranked board to /output/board.json,
-// and copies this repository's dashboard/ and screenshots/ to /output. Last, it writes /output/dossier.json,
-// the summary the judge reads, with the vendored make.fun library.
+// The program reads the sealed snapshot at /input/snapshot.json (or --input <file|dir>), scores every
+// pre-token protocol with the radar-2 category-evidence model in lib/model.ts, writes the ranked board
+// to /output/board.json, and copies this repository's dashboard/ and screenshots/ into /output. Last it
+// writes /output/dossier.json — the summary the judge reads — with the vendored make.fun library.
 //
 // The dashboard is a static page, no framework and no network: dashboard/index.html, dashboard/app.css
 // and dashboard/app.js read /output/data.js, which this program writes from the same board.
@@ -18,6 +18,15 @@ import { boardIssue, buildRadar, dataScript, parseSnapshot } from './lib/model.t
 import { buildDossier } from './vendor/makefun-board.ts';
 
 const here = fileURLToPath(new URL('.', import.meta.url));
+
+/** A row slug is the radar's primary key: refuse a duplicate before the gate does. */
+function assertUniqueSlugs(board: { slug: string }[]): void {
+  const seen = new Set<string>();
+  for (const row of board) {
+    if (seen.has(row.slug)) throw new Error(`duplicate slug on the board: ${row.slug}`);
+    seen.add(row.slug);
+  }
+}
 
 /** The scorer's own caps (reference/gate.json): the text cap shapes the bytes, the rest refuse. */
 const TEXT_MAX_BYTES = 65_536;
@@ -42,6 +51,7 @@ const out = arg('output', process.env.MAKEFUN_OUTPUT_DIR ?? '/output');
 
 const snapshot = parseSnapshot(readFileSync(inputFile, 'utf8'));
 const { board, radar } = buildRadar(snapshot);
+assertUniqueSlugs(board);
 const issue = boardIssue(board, snapshot);
 if (issue !== null) {
   process.stderr.write(`token radar: the model wrote a board the gate refuses: ${issue}\n`);
