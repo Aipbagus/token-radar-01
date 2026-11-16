@@ -52,6 +52,17 @@ a { color: var(--accent); }
 
 .shell { max-width: 1340px; margin: 0 auto; padding: var(--s5) var(--s6) var(--s7); }
 
+/* Methodology panel extras */
+.formula i, .backtest h3 { color: var(--accent); }
+.curve-plot { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-panel); padding: var(--s3); margin: var(--s3) 0; }
+.backtest { margin: var(--s3) 0 var(--s4); }
+.bt-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.bt-table td { padding: 5px 8px; border-top: 1px solid var(--border); }
+.bt-table td:first-child { color: var(--muted); }
+.bt-table .strong { color: var(--accent); font-weight: 600; }
+.bt-table .muted { color: var(--muted); }
+td.net { color: var(--amber); font-family: var(--font-num); font-size: 12px; white-space: nowrap; }
+
 /* Header */
 .top {
   display: flex; align-items: center; justify-content: space-between; gap: var(--s5);
